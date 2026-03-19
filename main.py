@@ -21,7 +21,7 @@ while True:
 
 
   image = cv2.imread('video', frame)
-  #cols = raw.shape[1]
+  cols = image.shape[1]
 
 
   # Resize
@@ -30,6 +30,8 @@ while True:
   # Greyscale
   image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
+  image = cv2.blur(image, (10, 10))
+
   # Threshold         120 is threshold, 255 is what we assign if it is below this
   _, image = cv2.threshold(image, 200, 255, cv2.THRESH_BINARY)
 
@@ -37,7 +39,7 @@ while True:
   raw = cv2.Canny(image, 20,40)
 
   #Countours (needs canny)
-  contours, _ = cv2.findContours(raw, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
+  contours, _ = cv2.findContours(raw, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
   
   contours_poly = [None]*len(contours)
 #   boundRect = [None]*len(contours)
@@ -52,43 +54,45 @@ while True:
       #lefty = int((-))
   # rows,cols = image.shape[:2]
   image = np.zeros((image.shape[0], image.shape[1],3), dtype=np.uint8)
-  lines = heapq.nlargest(2, contourArea)
+  lines = heapq.nlargest(2, range(len(contourArea)), key=contourArea.__getitem__)
   print(lines)
 
-  for i in range(len(lines)):
+  for i in range(len(contours)):
       cv2.drawContours(image, contours, i, (255,0,0),2)
-    # #   cv2.rectangle(image, (int(boundRect[i][0]), int(boundRect[i][1])), 
-    # #                  (int(boundRect[i][0]+boundRect[i][2]), int(boundRect[i][1]+boundRect[i][3])),(0,255,0),2)
-    #   vx = fitLine[i][0]
-    #   vy = fitLine[i][1]
-    #   x = fitLine[i][2]
-    #   y = fitLine[i][3]
-
-
-    #   # lefty = int(((int(-fitLine[i][2])*int(fitLine[i][1])) / (int(fitLine[i][0])))+int(fitLine[i][3])) 
-    #   # righty = int(((cols-int(fitLine[i][2]))*int(fitLine[i][1])/int(fitLine[i][0]))+int(fitLine[i][3]))
-    #   lefty = int((-x*vy/vx) + y) 
-    #   righty = int(((cols-x)*vy/vx)+y)
-    #   # p1 = np.array(cols-1,righty).astype(np.unit8)
-    #   # p2 =np.array(0,lefty).astype(np.unit8)
-    #   # p1x = cols-1
-    #   # p1x = p1x.to_bytes(8, 'little', signed=True)
-    #   # p1y = righty.to_bytes(8, 'little', signed=True)
-    #   # p2y = lefty.to_bytes(8, 'little', signed=False)
-    #   # p1 = tuple([(cols-1), righty])
-    #   # p2 = tuple([0, lefty])
-
-    #   # pk1 = np.zeros(p1, dtype=np.uint8)
-    #   # pk2 = np.zeros(p2, dtype=np.uint8)
-    #   # p2x = 0
-    #   print(righty)
-    #   # point1 = cv2.Point(cols-1, righty)
-    #   # point2 = cv2.Point(0, lefty)
-    #   if(righty > 0 and lefty > 0):
-    #     cv2.line(image, (639, righty),(0, lefty),(0,255,0),2)
-    #   # print(lefty)
+    #   cv2.rectangle(image, (int(boundRect[i][0]), int(boundRect[i][1])), 
+    #                  (int(boundRect[i][0]+boundRect[i][2]), int(boundRect[i][1]+boundRect[i][3])),(0,255,0),2)
+      vx = fitLine[i][0]
+      vy = fitLine[i][1]
+      x = fitLine[i][2]
+      y = fitLine[i][3]
+      print(i)
       
-    #   #print(cols)
+
+
+      # lefty = int(((int(-fitLine[i][2])*int(fitLine[i][1])) / (int(fitLine[i][0])))+int(fitLine[i][3])) 
+      # righty = int(((cols-int(fitLine[i][2]))*int(fitLine[i][1])/int(fitLine[i][0]))+int(fitLine[i][3]))
+      lefty = int((-x*vy/vx) + y) 
+      righty = int(((cols-x)*vy/vx)+y)
+      # p1 = np.array(cols-1,righty).astype(np.unit8)
+      # p2 =np.array(0,lefty).astype(np.unit8)
+      # p1x = cols-1
+      # p1x = p1x.to_bytes(8, 'little', signed=True)
+      # p1y = righty.to_bytes(8, 'little', signed=True)
+      # p2y = lefty.to_bytes(8, 'little', signed=False)
+      # p1 = tuple([(cols-1), righty])
+      # p2 = tuple([0, lefty])
+
+      # pk1 = np.zeros(p1, dtype=np.uint8)
+      # pk2 = np.zeros(p2, dtype=np.uint8)
+      # p2x = 0
+      # print(righty)
+      # point1 = cv2.Point(cols-1, righty)
+      # point2 = cv2.Point(0, lefty)
+      if(righty > 0 and lefty > 0):
+        cv2.line(image, (639, righty),(0, lefty),(0,255,0),2)
+      # print(lefty)
+      
+      #print(cols)
   
 
   
